@@ -23,6 +23,8 @@ dependencies {
 	implementation 'org.mapstruct:mapstruct:1.4.2.Final'
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+	implementation 'com.google.code.gson:gson' //Gson은 Java에서 Json을 파싱하고, 생성하기 위해 사용되는. 구글에서 개발한 오픈소스
 }
 
 tasks.named('test') {
