@@ -93,4 +93,57 @@ MockMvc의 perform() 메서드가 리턴하는 ResultActions 타입의 객체를
 데이터 액세스 계층 테스트 시에는 테스트 종료 직 후, DB의 상태를 테스트 케이스 실행 이전으로 되돌려서 깨끗하게 만든다.  
 @DataJpaTest 애너테이션을 사용하면 Spring Data JPA 환경에서 데이터 액세스 계층의 테스트를 손쉽게 진행할 수 있다.  
 @DataJpaTest 애너테이션은 @Transactional 애너테이션을 포함하고 있기 때문에 하나의 테스트 케이스 실행이 종료되는 시점에 데이터베이스에 저장된 데이터는 rollback 처리된다.  
+  
+  
+  
+  
+학습 목표  
+Mock의 의미를 이해할 수 있다.  
+Mockito의 기본 사용법을 이해할 수 있다.  
+비즈니스 로직의 단위 테스트에 Mockito를 적용할 수 있다.  
+Controller의 슬라이스 테스트에 Mockito를 적용할 수 있다.  
+TDD(Test Driver Development)의 개념을 이해할 수 있다.  
 
+
+Mock이란?  
+테스트 세계에서의 Mock은 바로 가짜 객체를 의미합니다.  
+그리고 단위 테스트나 슬라이스 테스트 등에 Mock 객체를 사용하는 것을 바로 Mocking  
+  
+우리가 작성한  slice/controller/member 패키지의 MemberControllerTest를 보면,  
+그 안의 매서드(postMemberTest)를 실행하려면,  
+(MemberControllerTest)postMemberTest, (MemberController)postMember, (MemberService)createMember, (MemberRepository)save 까지 가야함.  
+불필요한 전 계층을 다 거쳐야 되기 때문에 성능 면에서나 테스트 관심 영역 면에서나 슬라이스 테스트의 주 목적에 맞지않음.  
+  
+위의 문제를 해결하기 위해 Mock 객체를 사용하면 우리가 작성한 MemberController에 진정한 슬라이스 테스트를 적용. (뭔소린가 싶으면 3.8캡쳐 보기)  
+그렇게 적용되면 MemberService 대신 MockMemberService가 리파지토리와 db까지 갈일없이 해결.  
+  
+이러한 Mock객체를 사용하게 해주는 라이브러리가 Spring Framework에서 지원하는 Mockito 라이브러리.  
+slice/mock 패키지의 MemberControllerMockTest 클래스에 적용해봄.  
+MockMemberService(가칭) 클래스는 우리가 테스트하고자 하는 Controller의 테스트에 집중할 수 있도록 다른 계층과의 연동을 끊어주는 역할.  
+이처럼 Mockito를 잘 이용하면 의존하는 다른 메서드 호출이나 외부 서비스의 호출을 단절 시킬 수 있기 때문에 우리가 원하는 테스트의 범위를 최대한 좁힐 수 있음.  
+  
+MemberService 클래스의 verifyExistsEmail() 매서드는  
+파라미터로 전달 받은 email을 조건으로 한 회원 정보가 있는지 memberRepository.findByEmail(email)을 통해 DB에서 조회.  
+하지만 우리는 verifyExistsEmail() 메서드가 DB에서 Member 객체를 잘 조회하는지 여부를 테스트 하려는게 아니라,  
+어디서 조회해 왔든 상관없이 조회된 Member 객체가 null이면 BusinessLogicException 을 잘 던지는지 여부만 테스트하면 됨.  
+따라서 MemberService 클래스의 verifyExistsEmail() 매서드도 Mocking의 대상. → mock 패키지의 MemberServiceMockTest 클래스.  
+
+핵심 포인트  
+테스트 세계에서의 Mock은 바로 가짜 객체를 의미한다.  
+Mockito는 Mock 객체를 생성하고, 해당 Mock 객체가 진짜처럼 동작하게 하는 기능을 하는 Mocking framework(또는 라이브러리)이다.  
+@MockBean 애너테이션은 Application Context에 등록되어 있는 Bean에 대한 Mockito Mock 객체를 생성하고 주입해주는 역할을 한다.  
+Junit에서 Spring을 사용하지 않고 순수하게 Mockito의 기능만을 사용하기 위해서는 @ExtendWith(MockitoExtension.class)를 클래스 레벨에 추가해야 한다.  
+@Mock 애너테이션을 추가하면 해당 필드의 객체를 Mock 객체로 생성한다.  
+@Mcok 애너테이션을 통해 생성된 Mock 객체는 @InjectMocks 애너테이션을 추가한 필드에 주입된다.  
+  
+TDD 추가. (테스트 주도 개발)  
+⭐ TDD의 개발 방식은   
+‘실패하는 테스트 → 실패하는 테스트를 성공할 만큼의 기능 구현 → 성공하는 테스트 → 리팩토링 → 실패하는 테스트와 성공하는 테스트 확인’   
+이라는 흐름을 반복  
+
+TDD의 특징 정리  
+앞에서 간단한 기능을 구현해 보면서 살펴보았던 TDD의 특징을 다시 한번 정리해 보겠습니다.  
+TDD는 모든 조건에 만족하는 테스트를 먼저 진행한 뒤에 조건에 만족하지 않는 테스트를 단계적으로 진행하면서 실패하는 테스트를 점진적으로 성공시켜 갑니다.  
+TDD는 테스트 실행 결과가 “failed”인 테스트 케이스를 지속적으로 그리고 단계적으로 수정하면서 테스트 케이스 실행 결과가 “passed”가 되도록 만들고 있습니다.  
+TDD는 테스트가 “passed” 될 만큼의 코드만 우선 작성합니다.  
+TDD는 ‘실패하는 테스트 → 실패하는 테스트를 성공할 만큼의 기능 구현 → 성공하는 테스트 → 리팩토링 → 실패하는 테스트와 성공하는 테스트 확인’ 이라는 흐름을 반복합니다.  

@@ -51,7 +51,7 @@ public class MemberRepositoryTest {
 
         // when
         memberRepository.save(member);  // 회원 정보를 저장
-        Optional<Member> findMember = memberRepository.findByEmail(member.getEmail()); // (3)
+        Optional<Member> findMember = memberRepository.findByEmail(member.getEmail()); // 여기가 find메서드 이용
 
         // then 회원 정보의 조회가 정상적으로 이루어지는지 검증(Assertion)
         assertTrue(findMember.isPresent()); // 조회된 회원 정보가 null이 아닌지를 검증
