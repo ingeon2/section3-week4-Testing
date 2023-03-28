@@ -47,7 +47,8 @@ Asertion
   
   
     
-TEST의 basic 패키지엔 기본적인 애너테이션, junit없이 테스트한 내용 들어가있는 패키지. (@BeforeEach, @BeforeAll, assertThat, Assumption...)  
+junit 없이 행한 테스트는 helper 패키지의 StampCalcuatorWithoutJunit 클래스.  
+TEST의 basic 패키지엔 기본적인 애너테이션, junit 있이 테스트한 내용 들어가있는 패키지. (@BeforeEach, @BeforeAll, assertThat, Assumption...)  
 Assumption은 ‘~라고 가정하고’ 라는 표현을 쓸 때의 ‘가정’에 해당  
   
 JUnit에서는 테스트 케이스 실행이 끝난 시점에 후처리 작업을 할 수 있는 @AfterEach, @AfterAll 같은 애너테이션도 지원합니다.  
@@ -65,8 +66,9 @@ JUnit은 테스트 케이스 실행 전, 후에 어떤 처리 로직을 작성�
 
 Hamcrest란?  
 Hamcrest는 JUnit 기반의 단위 테스트에서 사용할 수 있는 Assertion Framework.  
-Hamcrest는 다음과 같은 이유로 JUnit에서 지원하는 Assertion 메서드보다 더 많이 사용. (가독성 굳), (각각의 테스트클래스에서 Hamscrete, junit 적용해봄.)    
-
+Hamcrest는 다음과 같은 이유로 JUnit에서 지원하는 Assertion 메서드보다 더 많이 사용.  
+(가독성 굳), (각각의 테스트클래스에서 Hamscrete, junit 적용해봄.)    
+  
 핵심 포인트  
 Hamcrest는 JUnit 기반의 단위 테스트에서 사용할 수 있는 Assertion Framework이다.  
 Hamcrest는 다음과 같은 이유로 JUnit에 지원하는 Assertion 메서드 보다 더 많이 사용된다.  
@@ -83,7 +85,8 @@ vs 단위테스트는 매서드단위.
 개발자가 각 계층에 구현해 놓은 기능들이 잘 동작하는지 특정 계층만 잘라서(Slice) 테스트하는 것을 슬라이스 테스트(Slice Test)라고 한다.  
 @SpringBootTest 애너테이션은 Spring Boot 기반의 애플리케이션을 테스트 하기 위한 Application Context를 생성한다.  
 @AutoConfigureMockMvc 애너테이션은 Controller 테스트를 위한 애플리케이션의 자동 구성 작업을 해준다.  
-MockMvc는 Tomcat 같은 서버를 실행하지 않고 Spring 기반 애플리케이션의 Controller를 테스트할 수 있는 완벽한 환경을 지원해주는 일종의 Spring MVC 테스트 프레임워크이다.  
+MockMvc는 Tomcat 같은 서버를 실행하지 않고 Spring 기반 애플리케이션의 Controller를 테스트할 수 있는 완벽한 환경을 지원해주는  
+일종의 Spring MVC 테스트 프레임워크이다.  
 MockMvc로 테스트 대상 Controller의 핸들러 메서드에 요청을 전송하기 위해서는 기본적으로 perform() 메서드를 먼저 호출해야 한다.  
 MockMvcRequestBuilders 클래스를 이용해서 빌더 패턴을 통해 request 정보를 채워 넣을 수 있다.  
 MockMvc의 perform() 메서드가 리턴하는 ResultActions 타입의 객체를 이용해서 request에 대한 검증을 수행할 수 있다.  
@@ -146,4 +149,5 @@ TDD의 특징 정리
 TDD는 모든 조건에 만족하는 테스트를 먼저 진행한 뒤에 조건에 만족하지 않는 테스트를 단계적으로 진행하면서 실패하는 테스트를 점진적으로 성공시켜 갑니다.  
 TDD는 테스트 실행 결과가 “failed”인 테스트 케이스를 지속적으로 그리고 단계적으로 수정하면서 테스트 케이스 실행 결과가 “passed”가 되도록 만들고 있습니다.  
 TDD는 테스트가 “passed” 될 만큼의 코드만 우선 작성합니다.  
-TDD는 ‘실패하는 테스트 → 실패하는 테스트를 성공할 만큼의 기능 구현 → 성공하는 테스트 → 리팩토링 → 실패하는 테스트와 성공하는 테스트 확인’ 이라는 흐름을 반복합니다.  
+TDD는 ‘실패하는 테스트 → 실패하는 테스트를 성공할 만큼의 기능 구현 →  
+성공하는 테스트 → 리팩토링 → 실패하는 테스트와 성공하는 테스트 확인’ 이라는 흐름을 반복합니다.  

@@ -19,6 +19,7 @@ public class HelloJunitTest {
     }
 
     @DisplayName("Hello Junit Test using hamcrest")
+
     @Test
     public void assertionTest2() {
         String expexted = "Hello, Junit";

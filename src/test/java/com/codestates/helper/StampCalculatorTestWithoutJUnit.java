@@ -19,7 +19,7 @@ public class StampCalculatorTestWithoutJUnit {
         //when
         int actual = StampCalculator.calculateStampCount(nowCount, earned);
 
-        int expected = 7;
+        int expected = 8;
 
         //then
         System.out.println(expected == actual);

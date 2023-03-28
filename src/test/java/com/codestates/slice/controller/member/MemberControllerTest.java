@@ -40,7 +40,8 @@ class MemberControllerTest {
 
         //when
         ResultActions actions =
-                mockMvc.perform( //MockMvc로 테스트 대상 Controller의 핸들러 메서드에 요청을 전송하기 위해서는 기본적으로 이와 같이 perform() 메서드를 호출해야 하며
+                mockMvc.perform( //MockMvc로 테스트 대상 Controller의 핸들러 메서드에 요청을 전송하기 위해서는
+                        // 기본적으로 이와 같이 perform() 메서드를 호출해야 하며
                         // perform() 메서드 내부에 Controller 호출을 위한 세부적인 정보들이 포함
                         post("/v11/members") // post() 메서드를 통해 HTTP POST METHOD와 request URL을 설정
                                 .accept(MediaType.APPLICATION_JSON) // accept() 메서드를 통해 클라이언트 쪽에서 리턴 받을 응답 데이터 타입으로 JSON 타입을 설정
@@ -51,7 +52,8 @@ class MemberControllerTest {
         //then
         actions.andExpect(status().isCreated())
                 //andExpect() 메서드를 통해 파라미터로 입력한 매처(Matcher)로 예상되는 기대 결과를 검증
-                //status().isCreated()를 통해 response status가 201(Created)인지 매치시키고 있습니다. 즉, 백엔드 측에 리소스인 회원 정보가 잘 생성(저장)되었는지를 검증
+                //status().isCreated()를 통해 response status가 201(Created)인지 매치.
+                //즉, 위에서 perform post를 했을 때 백엔드 측에 리소스인 회원 정보가 잘 생성(저장)되었는지를 검증
                 .andExpect(header().string("Location", is(startsWith("/v11/members/"))));
                 //header().string("Location", is(startsWith("/v11/members/"))) 을 통해 HTTP header에 추가된 Location의 문자열 값이 “/v11/members/”로 시작하는지 검증
                 //Location header가 예상하는 값과 일치한다라는 것은 백엔드 측에 리소스(회원 정보)가 잘 생성되었다는 것을 의미
@@ -96,7 +98,7 @@ class MemberControllerTest {
 
 //지금까지 @SpringBootTest, @AutoConfigureMockMvc 애너테이션을 사용해서 Controller 테스트를 진행하는 방법 작성.
 //MockMvcResultMatchers 클래스에서 지원하는 jsonPath()를 사용하면 JSON 형식의 개별 프로퍼티에 손쉽게 접근할 수 있다는 사실을 기억
-//@Transactional 안붙여서 에러났었음. (버전 충돌), 52행에서 201에러여야하는데 409에러나서.
+//@Transactional 안붙여서 에러났었음. (버전 충돌), 53행에서 201에러여야하는데 409에러나서.
 
 //이번 챕터에서 학습한 방법대로 테스트할 경우, Controller만 테스트하는 것이 아니라 애플리케이션의 전체 로직을 모두 실행하게 됩니다.
 //즉, 우리가 테스트에 집중해야 되는 계층은 API 계층인데 서비스 계층이나 데이터 액세스 계층까지 불필요한 로직이 수행된다는 것입니다.
