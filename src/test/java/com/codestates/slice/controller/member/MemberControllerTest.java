@@ -2,6 +2,7 @@ package com.codestates.slice.controller.member;
 
 import com.codestates.member.dto.MemberDto;
 import com.google.gson.Gson;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -27,6 +28,22 @@ class MemberControllerTest {
     @Autowired
     private Gson gson;
     //Gson은 Java에서 Json을 파싱하고, 생성하기 위해 사용되는. 구글에서 개발한 오픈소스
+
+    //아래에서 계속 사용해주기 위해 만들어줌 (변수, post매서드까지)
+    private MemberDto.Post beforePost1;
+    private MemberDto.Post beforePost2;
+    private String beforePostContent1;
+    private String beforePostContent2;
+    
+    @BeforeEach
+    public void init() { //postMemberTest 매서드에는 이해하기 위한 주석과 설명이 있으므로 이거 사용 안할 예정.
+        beforePost1 = new MemberDto.Post("hgd1@gmail.com", "홍길일", "010-1111-1111");
+        beforePost2 = new MemberDto.Post("hgd2@gmail.com", "홍길이", "010-2222-2222");
+
+        beforePostContent1 = gson.toJson(beforePost1);
+        beforePostContent2 = gson.toJson(beforePost2);
+
+    }
 
 
 
@@ -62,24 +79,18 @@ class MemberControllerTest {
 
     @Test ////MemberController의 getMember() 핸들러 메서드를 테스트 하는 테스트 케이스
     void getMemberTest() throws  Exception {
-        //getMemberTest 를 위해선 등록된 멤버가 있어야하고, 그래서 postMember 이용해야한다.
+        //given init() 에서 만든것 사용
+        ResultActions beforePostAction = mockMvc.perform(
+                post("/v11/members")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(beforePostContent1)
+        );
 
-        //===================================  postMember()를 이용한 테스트 데이터 생성 시작
-        //given
-        MemberDto.Post post = new MemberDto.Post("hgd@gmail.com","홍길동","010-1111-1111");
-        String postContent = gson.toJson(post);
-
-        ResultActions postActions =
-                mockMvc.perform(
-                        post("/v11/members")
-                                .accept(MediaType.APPLICATION_JSON)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(postContent)
-                );
         //===================================  postMember()를 이용한 테스트 데이터 생성 끝
 
         // (2)postMember()의 response에 전달되는 Location header 값을 가져오는 로직
-        String location = postActions.andReturn().getResponse().getHeader("Location"); // "/v11/members/1"을 의미.
+        String location = beforePostAction.andReturn().getResponse().getHeader("Location"); // "/v11/members/1"을 의미.
 
         // when, then
         mockMvc.perform(
@@ -88,9 +99,16 @@ class MemberControllerTest {
                 )
                 .andExpect(status().isOk()) // 기대하는 HTTP status가 200 OK인지를 검증
                 //여기 아래 세줄 getMember() 핸들러 메서드에서 리턴하는 response body(JSON 형식)의 각 프로퍼티(email, name, phone)의 값을 검증하는 기능을 추가
-                .andExpect(jsonPath("$.data.email").value(post.getEmail()))
-                .andExpect(jsonPath("$.data.name").value(post.getName()))
-                .andExpect(jsonPath("$.data.phone").value(post.getPhone()));
+                .andExpect(jsonPath("$.data.email").value(beforePost1.getEmail()))
+                .andExpect(jsonPath("$.data.name").value(beforePost1.getName()))
+                .andExpect(jsonPath("$.data.phone").value(beforePost1.getPhone()));
+    }
+
+    @Test
+    void patchMemberTest() {
+        //given
+        //when
+        //then
     }
 
 }
@@ -98,7 +116,7 @@ class MemberControllerTest {
 
 //지금까지 @SpringBootTest, @AutoConfigureMockMvc 애너테이션을 사용해서 Controller 테스트를 진행하는 방법 작성.
 //MockMvcResultMatchers 클래스에서 지원하는 jsonPath()를 사용하면 JSON 형식의 개별 프로퍼티에 손쉽게 접근할 수 있다는 사실을 기억
-//@Transactional 안붙여서 에러났었음. (버전 충돌), 53행에서 201에러여야하는데 409에러나서.
+//@Transactional 안붙여서 에러났었음. (버전 충돌), postMemberTest 매서드에서 201에러여야하는데 409에러나서.
 
 //이번 챕터에서 학습한 방법대로 테스트할 경우, Controller만 테스트하는 것이 아니라 애플리케이션의 전체 로직을 모두 실행하게 됩니다.
 //즉, 우리가 테스트에 집중해야 되는 계층은 API 계층인데 서비스 계층이나 데이터 액세스 계층까지 불필요한 로직이 수행된다는 것입니다.
